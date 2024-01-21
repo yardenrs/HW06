@@ -1,16 +1,21 @@
+import java.io.*;
+
 public class HackAssemler {
 
 
-    private In inputFile; 
-    private SymbolTable table;
+    private Parser parsedFile;
+    private SymbolTable symbolTable;
 
-    //c'tor: 
-    public HackAssemler(String fileName){
-        
-        this.inputFile = new In(fileName);
-        this.table = new SymbolTable();
+    // c'tor- Gets a String filename and initializing a parsed file and symbol map 
+    public HackAssemler(String fileName) throws IOException{
+
+        parsedFile = new Parser(fileName);
+        symbolTable = new SymbolTable();
 
     }
+        
+        
+
 
     /* First pass:
      Reads the program lines, one by one
