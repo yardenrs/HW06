@@ -3,22 +3,22 @@ import java.util.Map;
 
 public class SymbolTable {
 
-    public Map<String, Integer> SymbolMap = new HashMap<>();
+    private Map<String, Integer> symbolMap = new HashMap<>();
 
     // c'tor: creates and initializes a SymbolTable
     public SymbolTable(){
 
         for (int i = 0; i < 16; i++){
-            SymbolMap.put("R" + i, i); //R0,R1...,R15
+            symbolMap.put("R" + i, i); //R0,R1...,R15
         }
 
-        SymbolMap.put("SCREEN", 16384);
-        SymbolMap.put("KBD", 24576);
-        SymbolMap.put("SP", 0);
-        SymbolMap.put("LCL", 1);
-        SymbolMap.put("ARG", 2);
-        SymbolMap.put("THIS", 3);
-        SymbolMap.put("THAT", 4);
+        symbolMap.put("SCREEN", 16384);
+        symbolMap.put("KBD", 24576);
+        symbolMap.put("SP", 0);
+        symbolMap.put("LCL", 1);
+        symbolMap.put("ARG", 2);
+        symbolMap.put("THIS", 3);
+        symbolMap.put("THAT", 4);
         //end of table
 
     }
@@ -29,21 +29,26 @@ public class SymbolTable {
      */
     public void addEntry(String symbol, int adress){
 
+
+
     }
 
-    /*
-     * Checks if symbol exists in the table
+
+    /**  
+     * @param symbol
+     * @return true if symbol exists in table 
      */
     public boolean contains(String symbol){
-        return false;
-
+        return symbolMap.containsKey(symbol);
     }
 
-    /*
-     * Returns the address associated with symbol
+
+    /**
+     * @param symbol
+     * @return Return the address associated with symbol
      */
     public int getAddress(String symbol){
-        return -1;
+        return symbolMap.get(symbol);
 
     }
     
