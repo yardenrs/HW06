@@ -9,6 +9,8 @@ public class Parser{
     private  InputStream inputFile;
     private  Reader reader;
     private  BufferedReader bufferReader;
+    private String currentInstruction;
+    //private instruction instructionType;
     
     
     public Parser(String fileName) throws IOException{
@@ -22,20 +24,62 @@ public class Parser{
             // No errors in the file
         }
 
+        currentInstruction = advance();
+
     }
 
     //returns if there are more lines in the input
     public boolean hasMoreLines(){
 
-        return false;
+        return (bufferReader != null);
     }
 
 
     /*
      * Gets the next instruction and makes it the current instruction (string)
      */
-    public String advance(){
+    public String advance() throws IOException {
+        return bufferReader.readLine();
+    }
+
+
+    public instruction intstructionType() throws IOException{
+
+        // skip empty lines until reaching a text line
+        if (currentInstruction.indexOf('/') != -1 || emptyLine(currentInstruction) ){ // skip line
+            currentInstruction = bufferReader.readLine();
+        }
+        // check if currentInstruction is an 'A_instruction'
+        if(currentInstruction.indexOf('@') != -1){
+            return instruction.A_INSTRUCTION;
+        } 
+        // check if currentInstruction is an 'L_instruction'
+        else if(currentInstruction.indexOf('(') != -1){
+            return instruction.L_INSTRUCTION;
+        }
+        // if currentInstruction is nither an empty line, nor an A_instruction, or an L_instruction,
+        // it is a C_insturction 
+        else {
+            return instruction.C_INSTRUCTION;
+        }
+
+    } 
+
+    public String sybmol(){
         return "";
+    }
+
+
+    /**
+     * Gets a string and returns if empty (empty or only white spaces)
+     * @param s
+     * @return boolean
+     */
+    public static boolean emptyLine(String s){
+        for(int i = 0; i < s.length(); i ++)
+            if(s.charAt(i) != ' ')
+                return false;
+        return true;
     }
     
 }
