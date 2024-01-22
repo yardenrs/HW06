@@ -5,13 +5,15 @@ public class HackAssemler {
 
     private Parser parsedFile;
     private SymbolTable symbolTable;
+    private Code code; 
+    
+
 
     // c'tor- Gets a String filename and initializing a parsed file and symbol map 
     public HackAssemler(String fileName) throws IOException{
 
         parsedFile = new Parser(fileName);
         symbolTable = new SymbolTable();
-
     }
         
         
@@ -22,8 +24,26 @@ public class HackAssemler {
      focusing only on (label) declarations.
      Adds the found labels to the symbol table
      */ 
-    public void firstPass(){
+    public void firstPass() throws IOException{
 
+        String currentInst = parsedFile.getCurrentInstruction();
+        int lineCount = 0;
+        String lable;
+
+        while (parsedFile.hasMoreLines()){ 
+            if (currentInst.indexOf('/') != -1 || emptyLine(currentInst) ) { // skip line (Empty or comment)
+                currentInst = parsedFile.advance();
+                continue;
+            }
+
+            // add the found lable to symboltable
+            if (parsedFile.intstructionType() != instruction.L_INSTRUCTION){
+                lable = currentInst.substring(1, currentInst.length()-1);
+                symbolTable.addEntry(lable, lineCount);
+            }
+            
+            lineCount++;
+        }
     }
 
 
@@ -42,6 +62,19 @@ public class HackAssemler {
     public void secondPass(){
 
 
+    }
+
+
+    /**
+     * Gets a string and returns if empty (empty or only white spaces)
+     * @param s
+     * @return boolean
+     */
+    public static boolean emptyLine(String s){
+        for(int i = 0; i < s.length(); i ++)
+            if(s.charAt(i) != ' ')
+                return false;
+        return true;
     }
 
 
