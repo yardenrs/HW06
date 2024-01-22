@@ -88,16 +88,25 @@ public class Parser{
      * @return Return the instruction’s dest field
      */
     public String dest(){
-        int index = currentInstruction.indexOf('=');
-        int index2 = currentInstruction.indexOf (';');
+        int equalsIndex = currentInstruction.indexOf('=');
         int start = 0; // start is the first index in the string that is not white space
         for (int i = 0; i < currentInstruction.length(); i++)
             if (currentInstruction.charAt(i) != ' ') {
                 start = i;
                 break;
             }
-        return currentInstruction.substring(start, index);
+        return currentInstruction.substring(start, equalsIndex);
 
+    }
+
+    /** Used only if the current instruction is
+        dest =comp ; jump
+     * @return Return the instruction’s comp field
+     */
+    public String comp(){
+        int equalsIndex = currentInstruction.indexOf('=');
+        int semiCommaIndex = currentInstruction.indexOf (';');
+        return currentInstruction.substring(equalsIndex + 1, semiCommaIndex);
     }
 
 
