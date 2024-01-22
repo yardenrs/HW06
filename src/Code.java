@@ -156,6 +156,40 @@ public class Code {
         
     }
 
+    public int jump(String jmp){
+        String res;
+        if (jmp == null) {
+            res = "000";
+        } else {
+        switch (jmp) {
+            case "JGT":
+                res = "001";
+                break;
+            case "JEQ":
+                res = "010";
+                break;
+            case "JGE":
+                res = "011";
+                break;
+            case "JLT":
+                res = "100";
+                break;
+            case "JNE":
+                res = "101";
+                break;
+            case "JLE":
+                res = "110";
+                break;
+            case "JMP":
+                res = "111";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + jmp);
+            }
+        }
+        return Integer.parseInt(res, 2);
+    }
+
 
         /**
      * Takes a decimal number and returns its 16bit presentation
