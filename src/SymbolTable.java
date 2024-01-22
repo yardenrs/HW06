@@ -28,9 +28,7 @@ public class SymbolTable {
      * Adds <symbol, address> to the table
      */
     public void addEntry(String symbol, int adress){
-
-
-
+        symbolMap.put(symbol, adress);
     }
 
 
