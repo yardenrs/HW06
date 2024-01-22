@@ -13,6 +13,7 @@ public class Parser{
     //private instruction instructionType;
     
     
+    // c'tor
     public Parser(String fileName) throws IOException{
 
         try {
@@ -28,7 +29,7 @@ public class Parser{
 
     }
 
-    //returns if there are more lines in the input
+    // return if there are more lines in the input
     public boolean hasMoreLines(){
 
         return (bufferReader != null);
@@ -36,7 +37,7 @@ public class Parser{
 
 
     /*
-     * Gets the next instruction and makes it the current instruction (string)
+     * Get the next instruction and makes it the current instruction (string)
      */
     public String advance() throws IOException {
         return bufferReader.readLine();
@@ -44,7 +45,7 @@ public class Parser{
 
 
     
-    /** Returns the current instruction type, as a constant:
+    /** Return the current instruction type, as a constant:
         A_INSTRUCTION for @ xxx, where xxx is either a decimal number or a symbol
         C_INSTRUCTION for dest = comp ; jump
         L_INSTRUCTION for (label)
@@ -72,12 +73,31 @@ public class Parser{
         }
     } 
 
-    /** 
+    /** Used only if the current instruction is
+        '@symbol' or (symbol)
      * @return Returns the instruction’s symbol (string)
      */
     public String sybmol(){ 
         int index = currentInstruction.indexOf('@');
         return  currentInstruction.substring(index+1);
+    }
+
+    
+    /** Used only if the current instruction is
+        dest =comp ; jump
+     * @return Return the instruction’s dest field
+     */
+    public String dest(){
+        int index = currentInstruction.indexOf('=');
+        int index2 = currentInstruction.indexOf (';');
+        int start = 0; // start is the first index in the string that is not white space
+        for (int i = 0; i < currentInstruction.length(); i++)
+            if (currentInstruction.charAt(i) != ' ') {
+                start = i;
+                break;
+            }
+        return currentInstruction.substring(start, index);
+
     }
 
 
