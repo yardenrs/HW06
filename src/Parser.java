@@ -110,6 +110,16 @@ public class Parser{
     }
 
 
+    /** Used only if the current instruction is
+        dest =comp ; jump
+     * @return Return the instruction’s jump field
+     */
+    public String jump(){
+        int semiCommaIndex = currentInstruction.indexOf (';');
+        return currentInstruction.substring(semiCommaIndex + 1);
+    }
+
+
     /**
      * Gets a string and returns if empty (empty or only white spaces)
      * @param s
