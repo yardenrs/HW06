@@ -43,6 +43,14 @@ public class Parser{
     }
 
 
+    
+    /** Returns the current instruction type, as a constant:
+        A_INSTRUCTION for @ xxx, where xxx is either a decimal number or a symbol
+        C_INSTRUCTION for dest = comp ; jump
+        L_INSTRUCTION for (label)
+     * @return the instruction type (as a constant?);
+     * @throws IOException
+     */
     public instruction intstructionType() throws IOException{
 
         // skip empty lines until reaching a text line
@@ -62,11 +70,14 @@ public class Parser{
         else {
             return instruction.C_INSTRUCTION;
         }
-
     } 
 
-    public String sybmol(){
-        return "";
+    /** 
+     * @return Returns the instruction’s symbol (string)
+     */
+    public String sybmol(){ 
+        int index = currentInstruction.indexOf('@');
+        return  currentInstruction.substring(index+1);
     }
 
 
