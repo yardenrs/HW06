@@ -6,14 +6,16 @@ public class HackAssemler {
     private Parser parsedFile;
     private SymbolTable symbolTable;
     private Code code; 
+    private String fileName;
     
 
 
     // c'tor- Gets a String filename and initializing a parsed file and symbol map 
     public HackAssemler(String fileName) throws IOException{
 
-        parsedFile = new Parser(fileName);
-        symbolTable = new SymbolTable();
+        this.fileName = fileName;
+        this.parsedFile = new Parser(fileName);
+        this.symbolTable = new SymbolTable();
     }
         
         
@@ -36,12 +38,16 @@ public class HackAssemler {
                 continue;
             }
 
-            // add the found lable to symboltable
-            if (parsedFile.intstructionType() != instruction.L_INSTRUCTION){
-                lable = currentInst.substring(1, currentInst.length()-1);
-                symbolTable.addEntry(lable, lineCount);
+            // if encounter a lable, check if symbol table already contains lable.
+            // if not, add the found lable to symboltable
+            if (parsedFile.intstructionType() == instruction.L_INSTRUCTION){
+                lable = currentInst.substring(1, currentInst.length()-1); // parse lable name
+                if(!symbolTable.contains(lable)){  
+                    symbolTable.addEntry(lable, lineCount);
+                }
+                
             }
-            
+
             lineCount++;
         }
     }
@@ -59,7 +65,20 @@ public class HackAssemler {
         Assembles the binary values into a string of sixteen 0’s and 1’s
         Writes the string to the output file.
      */
-    public void secondPass(){
+    public void secondPass() throws IOException{
+
+        parsedFile = new Parser(fileName);
+        String currentInst = parsedFile.getCurrentInstruction();
+
+        while(parsedFile.hasMoreLines()){
+            if (currentInst.indexOf('/') != -1 || emptyLine(currentInst) ) { // skip line (Empty or comment)
+                currentInst = parsedFile.advance();
+                continue;
+            }
+
+
+
+        }
 
 
     }
