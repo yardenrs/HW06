@@ -25,7 +25,6 @@ public class HackAssembler {
         
         
 
-
     /* First pass:
      Reads the program lines, one by one
      focusing only on (label) declarations.
@@ -135,28 +134,13 @@ public class HackAssembler {
     }
 
 
-    /**
-     * Takes a decimal number and returns its 16bit presentation
-     * @param dec
-     * @return String str (str.length() = 16)
-     */
-    public static String decTo16(int dec){
-        int[] bin = new int[16];
-        int log;
-        while (dec > 0){
-            log = (int)(Math.log(dec)/Math.log(2));//log dec on base 2
-            bin[log] = 1;
-            dec -= Math.pow(2,log);
+    public void run(){
+        try {
+            firstPass();
+            secondPass();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        String str = "";
-        char c;
-        for (int i = 15; i>=0; i--){
-            c = '0';
-            if(bin[i] == 1)
-                c = '1';
-            str = str + c;
-        }
-        return str;
     }
     
 }
