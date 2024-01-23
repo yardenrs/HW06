@@ -4,6 +4,9 @@ import java.util.Map;
 public class SymbolTable {
 
     private Map<String, Integer> symbolMap = new HashMap<>();
+    private int freeAddress = 16; // First free memory address for variables
+
+
 
     // c'tor: creates and initializes a SymbolTable
     public SymbolTable(){
@@ -25,10 +28,12 @@ public class SymbolTable {
 
 
     /*
-     * Adds <symbol, address> to the table
+     * Adds <symbol, address> to the table, if symbol table does not contain it already.
      */
     public void addEntry(String symbol, int adress){
-        symbolMap.put(symbol, adress);
+        if(!contains(symbol)){
+            symbolMap.put(symbol, adress);
+        }   
     }
 
 
@@ -48,6 +53,11 @@ public class SymbolTable {
     public int getAddress(String symbol){
         return symbolMap.get(symbol);
 
+    }
+
+    public int addVariable(String symbol) {
+        symbolMap.put(symbol, freeAddress);
+        return freeAddress++;
     }
     
 }

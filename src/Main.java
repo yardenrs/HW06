@@ -1,8 +1,10 @@
+import java.io.IOException;
+
 public class Main {
 
-    public statin main (String[] args){
+    public static void main (String[] args){
         try {
-            HackAssembler assembler = new HackAssembler(args[0]);
+            HackAssembler assembler = new HackAssembler("MaxL.asm");
             assembler.firstPass();
             assembler.secondPass();
         } catch (IOException e) {

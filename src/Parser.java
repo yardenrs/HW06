@@ -1,46 +1,31 @@
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+
 
 public class Parser{
-    private  InputStream inputFile;
-    private  Reader reader;
-    private  BufferedReader bufferReader;
+    private BufferedReader bufferedReader;
     private String currentInstruction;
-    //private instruction instructionType;
-    
-    
+        
     // c'tor
-    public Parser(String fileName) throws IOException{
-
-        try {
-            inputFile =new FileInputStream(fileName);
-            reader =new InputStreamReader(inputFile);
-            bufferReader =new BufferedReader(reader);
-        }
-        catch (IOException e){
-            // No errors in the file
-        }
-
-        currentInstruction = advance();
-
+        public Parser(String fileName) throws IOException {
+        bufferedReader = new BufferedReader(new FileReader(fileName));
+        currentInstruction = null;
     }
 
     // return if there are more lines in the input
-    public boolean hasMoreLines(){
-
-        return (bufferReader != null);
+    public boolean hasMoreLines() throws IOException {
+        return bufferedReader.ready();
     }
 
 
     /*
      * Get the next instruction and makes it the current instruction (string)
      */
-    public String advance() throws IOException {
-        return bufferReader.readLine();
+    public void advance() throws IOException {
+        do {
+            currentInstruction = bufferedReader.readLine().trim();
+        } while (currentInstruction != null && (currentInstruction.isEmpty() || currentInstruction.startsWith("//")));
     }
 
 
@@ -52,34 +37,30 @@ public class Parser{
      * @return the instruction type (as a constant?);
      * @throws IOException
      */
-    public instruction intstructionType() throws IOException{
-
-        // skip empty lines until reaching a text line
-        if (currentInstruction.indexOf('/') != -1 || emptyLine(currentInstruction) ){ // skip line
-            currentInstruction = bufferReader.readLine();
+    public Instruction instructionType() {
+        if (currentInstruction == null) {
+            return Instruction.NONE;
+        } else if (currentInstruction.startsWith("@")) {
+            return Instruction.A_INSTRUCTION;
+        } else if (currentInstruction.startsWith("(") && currentInstruction.endsWith(")")) {
+            return Instruction.L_INSTRUCTION;
+        } else {
+            return Instruction.C_INSTRUCTION;
         }
-        // check if currentInstruction is an 'A_instruction'
-        if(currentInstruction.indexOf('@') != -1){
-            return instruction.A_INSTRUCTION;
-        } 
-        // check if currentInstruction is an 'L_instruction'
-        else if(currentInstruction.indexOf('(') != -1){
-            return instruction.L_INSTRUCTION;
-        }
-        // if currentInstruction is nither an empty line, nor an A_instruction, or an L_instruction,
-        // it is a C_insturction 
-        else {
-            return instruction.C_INSTRUCTION;
-        }
-    } 
+    }
 
     /** Used only if the current instruction is
         '@symbol' or (symbol)
      * @return Returns the instruction’s symbol (string)
+     * @throws IOException 
      */
-    public String sybmol(){ 
-        int index = currentInstruction.indexOf('@');
-        return  currentInstruction.substring(index+1);
+    public String symbol() throws IOException {
+        if (instructionType() == Instruction.A_INSTRUCTION) {
+            return currentInstruction.substring(1);
+        } else if (instructionType() == Instruction.L_INSTRUCTION) {
+            return currentInstruction.substring(1, currentInstruction.length() - 1);
+        }
+        return null;
     }
 
     
@@ -87,26 +68,29 @@ public class Parser{
         dest =comp ; jump
      * @return Return the instruction’s dest field
      */
-    public String dest(){
-        int equalsIndex = currentInstruction.indexOf('=');
-        int start = 0; // start is the first index in the string that is not white space
-        for (int i = 0; i < currentInstruction.length(); i++)
-            if (currentInstruction.charAt(i) != ' ') {
-                start = i;
-                break;
-            }
-        return currentInstruction.substring(start, equalsIndex);
-
+    public String dest() {
+        if (instructionType() == Instruction.C_INSTRUCTION) {
+            int equalsIndex = currentInstruction.indexOf('=');
+            return equalsIndex != -1 ? currentInstruction.substring(0, equalsIndex) : "null";
+        }
+        return null;
     }
 
     /** Used only if the current instruction is
         dest =comp ; jump
      * @return Return the instruction’s comp field
      */
-    public String comp(){
-        int equalsIndex = currentInstruction.indexOf('=');
-        int semiCommaIndex = currentInstruction.indexOf (';');
-        return currentInstruction.substring(equalsIndex + 1, semiCommaIndex);
+    public String comp() {
+        if (instructionType() == Instruction.C_INSTRUCTION) {
+            int equalsIndex = currentInstruction.indexOf('=');
+            int semiColonIndex = currentInstruction.indexOf(';');
+            if (semiColonIndex != -1) {
+                return currentInstruction.substring(equalsIndex + 1, semiColonIndex);
+            } else if (equalsIndex != -1) {
+                return currentInstruction.substring(equalsIndex + 1);
+            }
+        }
+        return null;
     }
 
 
@@ -114,22 +98,21 @@ public class Parser{
         dest =comp ; jump
      * @return Return the instruction’s jump field
      */
-    public String jump(){
-        int semiCommaIndex = currentInstruction.indexOf (';');
-        return currentInstruction.substring(semiCommaIndex + 1);
+    public String jump() {
+        if (instructionType() == Instruction.C_INSTRUCTION) {
+            int semiColonIndex = currentInstruction.indexOf(';');
+            return semiColonIndex != -1 ? currentInstruction.substring(semiColonIndex + 1) : "null";
+        }
+        return null;
     }
 
+    
+    public void reset() throws IOException {
+        bufferedReader.reset();
+    }
 
-    /**
-     * Gets a string and returns if empty (empty or only white spaces)
-     * @param s
-     * @return boolean
-     */
-    public static boolean emptyLine(String s){
-        for(int i = 0; i < s.length(); i ++)
-            if(s.charAt(i) != ' ')
-                return false;
-        return true;
+    public String getCurrentInstruction() {
+        return currentInstruction;
     }
     
 }
